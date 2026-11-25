@@ -4,11 +4,19 @@
   "tagline": "Everyone matches. You don't. Stay odd for 10 minutes.",
   "description": "You are Odd, the one mismatched robot in the vale, and an endless crowd of identical Matchers wants to fix that. You only steer: your gadgets fire on their own, and every level adds something new to the pile. Survive 10 minutes, break the Template, and spend your scrap on permanent upgrades between runs.",
   "genre": "Arcade survival",
+  "kinds": [
+    "Arcade"
+  ],
+  "daily": false,
   "verb": "Survive",
   "tone": "ink",
   "players": "1 player",
   "session": "5–10 min runs",
-  "controls": ["Keyboard", "Mouse", "Touch"],
+  "controls": [
+    "Keyboard",
+    "Mouse",
+    "Touch"
+  ],
   "version": "1.0.0",
   "released": "2026-11-24",
   "updated": "2026-11-24",
