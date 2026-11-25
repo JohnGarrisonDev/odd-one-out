@@ -62,20 +62,44 @@ __game.run                 // the live state
 
 After any change: `node --test tests/`, then play it (desktop and phone width, console open).
 
-## Balance notes (v1.0.0)
+## Balance notes (v1.1.0)
 
-Measured with `node tools/balance.mjs 24 12` (bots, 12 minute cap):
+v1.1.0 rebalanced weapons and Lucky Nut, made bosses size you up, and reshaped endless mode. Measured before and after on the same seeds (`1000 + i * 7`, the seeds `tools/balance.mjs` uses), 12 minute cap. Novice: 96 runs; good bots: 96 runs each. `node tools/balance.mjs 24 12` prints the same kind of numbers for 24 runs (a 24-run sample swings a lot: the good bot's median moved between 10:08 and 12:00 across samples).
 
-| Bot | Median survival | Range | Beat the Template |
-| --- | --- | --- | --- |
-| novice, no workshop | 2:53 | 1:27 to 6:58 | 0 of 24 |
-| good, no workshop | 11:36 | 6:00 to 12:00+ | 8 of 24 |
-| good, full workshop | 12:00+ (cap) | all reached the Template | 17 of 24 |
+| Bot | Median survival (before → after) | Beat the Template | Template fight, wins only: median (range) | Fight length incl. unfinished, p25 / median / p75 |
+| --- | --- | --- | --- | --- |
+| novice, no workshop | 2:53 → 2:50 (p25 2:08 → 1:54, p75 4:01 → 3:54) | 0 → 0 of 96 | n/a | n/a |
+| good, no workshop | 10:42 → 10:08 | 20 → 20 of 96 (reached it: 59 → 50) | 64 s (47-103) → 72 s (29-115) | 66 / 132 / 224 s → 70 / 101 / 167 s |
+| good, full workshop | 12:00 (cap) → 12:00 | 56 → 72 of 96 | 61 s (29-120) → 72 s (32-117) | 51 / 107 / 183 s → 58 / 85 / 122 s |
+
+"Fight length incl. unfinished" is the kill time for wins, and the Template's HP divided by the damage per second it was taking for runs that died or hit the cap. The p75/p25 spread went from 3.4-3.6 to 2.1-2.4.
+
+Weapon share of its run's damage when held (good bot, no workshop / full workshop), before → after. An even share with 4 weapons would be 25%:
+
+| Weapon | Before | After |
+| --- | --- | --- |
+| Hot Oil | 43% / 40% | 33% / 28% |
+| Bolt Mines | 42% / 43% | 30% / 29% |
+| Spark (always held) | 25% / 30% | 25% / 29% |
+| Odd Eye Beam | 26% / 26% | 24% / 25% |
+| Chain Lightning | 23% / 25% | 23% / 27% |
+| Wrench-a-rang | 19% / 13% | 23% / 17% |
+| Magnet Pulse | 12% / 13% | 20% / 20% |
+| Orbit Gears | 8% / 6% | 20% / 19% |
+
+Pick rates (share of runs holding each weapon) did not change in any meaningful way (gears 40-44%, mines 40-44%, oil 40-55%): the good bot rates every weapon card the same, so pick rate is set by the offer weights, not by weapon strength.
+
+Lucky Nut: forcing a part whenever offered (good bot, no workshop, 48 runs, before) gave Lucky Nut 8:09 median survival (others 7:31 to 11:09) and the lowest damage per second at 9-10 minutes of any part. It now does `LUCK` in `data/weapons.js`: drops x1.4 per level (was x1.25), 0.02% per level chance per ordinary Matcher of a crate, 18% per level chance of a 4th card (was 12%). Springy Treads (7:31) and Dented Armour (7:43) were as weak in that test and were not changed. The good bot itself almost never picks Lucky Nut (its weight in `bot.js` is the lowest), so normal bot runs barely see it.
+
+How bosses size you up (`POWER` in `data/timeline.js`, `sizeUp` in `director.js`): the director keeps a 30 s running average of your damage per second (`s.dealt`). The Template arrives with HP x (dps / 12000), clamped to 0.7-1.3. Once it is hurt or within 320 units, it watches the damage it takes for 20 s, then rescales its HP once (by 0.5-1.25, keeping the bar's fraction) aiming at a 65 s fight, and the total is kept within 0.4-1.6 x 15,000. Its pattern cooldown is multiplied by HPmul^-0.3 (0.85-1.15). Why a calibration window: crowd damage per second only loosely predicts damage on the boss (correlation 0.35-0.65, depending on the weapon mix), level even less (0.1-0.5), and damage to elites no better. What decides boss damage is mostly the weapon mix (Bolt Mines builds hit the Template about twice as hard as Gears/Pulse builds, because the bot runs from bosses and short-range weapons can't reach) and how the fight goes, which only the fight itself shows.
+
+Endless (`ENDLESS`, `ENDLESS_WAVES` in `data/timeline.js`, `runEndless` in `director.js`): themed spawn mixes take turns every 45 s with a banner, elite packs every 40 s (2 growing to 6), an old boss every 120 s with 12,000 base HP x (1 + 0.35 per reprise so far), sized up like the Template. Spawn rate in endless now grows 1/420 per second (was 1/240). Before, the third reprise was a 108,000 HP Template. Full-workshop good bot with a 22 minute cap: beat the Template 45 → 48 of 48; died in endless 19 → 30 of 48, at 18-602 s (median 278 s) after the win before and 94-548 s (median 385 s) after. More runs end in endless now, but later and spread out, rather than at a wall of numbers. Endless has had no human play.
 
 - Targets: a new player lasts 2 to 4 minutes; a decent build feels strong by minute 6 (about level 20 to 24); the last two minutes have 300 to 500 Matchers alive. Typical level at 10:00 is 38 to 45, which is close to a full build (4 weapons x 5 levels + 5 parts).
 - The bots are not people. The good bot dodges better than a human and runs from bosses (so it often fails to finish the Template in time); the novice bot picks cards at random. Use them to compare before/after, not as truth.
 - Knobs, in order of usefulness: `hpScale` (how tanky the crowd is over time), phase `rate` (how many), enemy `speed` (how hard it is to kite; walkers are 43% of Odd's speed, runners 74%), `xpNeed` (levelling pace).
-- In a dense crowd, area weapons (mines, oil, gears, pulse) out-damage single-target ones several times over; Spark and Chain make up for it with range and boss damage. Bolt Mines is the strongest weapon in bot runs because the crowd walks over them. Watch it.
+- In a dense crowd, area weapons (mines, oil, gears, pulse) out-damage single-target ones several times over; Spark and Chain make up for it with range. Bolt Mines was the strongest weapon in v1.0.0 because the crowd (and bosses) walk over them; Hot Oil was just as strong. Both were cut in v1.1.0 and are still the top two by a few points. Melee weapons (gears, pulse) look strong in `tools/dps.mjs` (Odd stands in the crowd) but weak in bot runs (the bot keeps its distance): judge weapons by damage share in `tools/balance.mjs`, not by the bench alone.
+- The novice bot's survival is set mostly by weapon levels 1 and 2 (it averages about weapon level 2 when it dies). A first pass that buffed gears, pulse and wrench at levels 1-2 pushed the novice median from 2:53 to 3:23, so those buffs only start at level 3.
 - Scrap: time/6 + pickups + elites + bosses (+40 for a win), times the Nose for Scrap bonus. A 3 minute run pays about 40 to 60 (novice bot average: 56 a run), a win 400 to 700. The whole workshop costs about 5,700, loadouts 380.
 - Player hits: 0.5 s of invulnerability after any hit, so damage per second is capped by the hardest hitter, not the crowd size. Contact damage is what kills new players; shots and slams are what kill good ones.
 
@@ -83,9 +107,9 @@ Measured with `node tools/balance.mjs 24 12` (bots, 12 minute cap):
 
 - Not yet played by a human hand at full speed during development (the test browser was throttled); feel was tuned from bot runs, timing maths and screenshots. Real play-testing feedback is the most valuable input for the next update.
 - No music, only effects.
-- Endless mode scales by simple multipliers and gets unfair rather than interesting after a few minutes.
-- The Template fight is short for strong builds and long for weak ones (its HP does not scale with your damage).
-- Luck is a weak pick; Bolt Mines is a strong one.
+- The Template fight still varies (bots: about 30 to 120 s) because the good bot runs from bosses and short-range builds barely reach it; sizing narrowed the spread but cannot fix that. A player could in theory run away for the 20 s sizing window to get a smaller Template (it is clamped, so the gain is limited).
+- Hot Oil and Bolt Mines still lead damage share (28-33% when held); Wrench-a-rang is the weakest with a full workshop (17%). Springy Treads and Dented Armour test as weak as Lucky Nut did.
+- Endless mode's new waves, packs and reprises are tuned from bot runs only.
 - Full screen on phones in landscape is cramped (overlays scroll).
 
 ## Backlog (ideas for future updates)

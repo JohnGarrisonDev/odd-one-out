@@ -1,6 +1,7 @@
 // Shared building blocks of the simulation: spawning things, hurting things, pickups and cosmetic effects.
 // Everything takes the run state `s` first. No DOM. Objects are recycled through s.free.* to avoid garbage.
 import { ENEMIES, ELITE } from './data/enemies.js'
+import { LUCK } from './data/weapons.js'
 import { hpScale, dmgScale, speedScale, xpNeed } from './data/timeline.js'
 import { TAU } from './util.js'
 
@@ -65,7 +66,7 @@ export function spawnEnemy(s, type, x, y, opts) {
   e.state = 0; e.t1 = def.boss ? 2.2 : (def.shotCd || def.dashCd || 0) * (0.4 + s.rng() * 0.6); e.t2 = 0
   e.dx = 0; e.dy = 0; e.vx = 0; e.vy = 0; e.dieAt = Infinity
   e.cdA = 0; e.cdB = 0; e.cdW = 0; e.cdP = 0; e.slowUntil = 0; e.slowMul = 1; e.tok = 0
-  e.pat = ''; e.mx = 0; e.my = 0; e.dmgMul = 1
+  e.pat = ''; e.mx = 0; e.my = 0; e.dmgMul = 1; e.cdMul = 1
   e.phase = s.rng() * TAU; e.pi = 0; e.cnt = 0; e.ang = 0; e.born = s.t
   s.enemies.push(e)
   if (def.boss) { s.boss = e; emit(s, 'boss'); s.banner = def.name; s.bannerT = 3.2; shake(s, 8) }
@@ -79,6 +80,7 @@ export function hurtEnemy(s, e, dmg, kx, ky, wid) {
   e.hp -= dmg; e.flash = 0.1
   const k = 1 - e.kbResist
   e.kx += kx * k; e.ky += ky * k
+  s.dealt += dmg
   if (wid) s.dmgBy[wid] = (s.dmgBy[wid] || 0) + dmg
   floatText(s, e.x, e.y - e.r, dmg)
   if (e.hp <= 0) killEnemy(s, e)
@@ -107,15 +109,16 @@ export function killEnemy(s, e) {
     return
   }
   spawnPickup(s, 'bolt', e.x, e.y, e.xp)
-  const luck = 1 + s.stats.luck * 0.25
+  const luck = 1 + s.stats.luck * LUCK.drops
   const roll = rng()
   if (e.elite) {
     spawnPickup(s, 'crate', e.x, e.y, 1)
     spawnPickup(s, 'scrap', e.x + 14, e.y - 8, ELITE.scrap)
   } else if (roll < 0.006 * luck) spawnPickup(s, 'heart', e.x, e.y, 1)
-  else if (roll < 0.0085 * luck) spawnPickup(s, 'magnet', e.x, e.y, 1)
-  else if (roll < 0.0105 * luck) spawnPickup(s, 'bomb', e.x, e.y, 1)
-  else if (roll < 0.026 * luck) spawnPickup(s, 'scrap', e.x + 8, e.y, 1)
+  else if (roll < 0.006 * luck + LUCK.crate * s.stats.luck) spawnPickup(s, 'crate', e.x, e.y, 1) // Lucky Nut only
+  else if (roll < 0.0085 * luck + LUCK.crate * s.stats.luck) spawnPickup(s, 'magnet', e.x, e.y, 1)
+  else if (roll < 0.0105 * luck + LUCK.crate * s.stats.luck) spawnPickup(s, 'bomb', e.x, e.y, 1)
+  else if (roll < 0.026 * luck + LUCK.crate * s.stats.luck) spawnPickup(s, 'scrap', e.x + 8, e.y, 1)
   if (def.split) {
     for (let i = 0; i < def.split.n; i++) {
       const a = rng() * TAU

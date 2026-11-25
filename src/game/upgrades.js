@@ -1,5 +1,5 @@
 // Level-up offers: what may be offered, rolling cards, applying a pick. No DOM.
-import { WEAPONS, PASSIVES, MAX_WEAPONS, MAX_PASSIVES } from './data/weapons.js'
+import { WEAPONS, PASSIVES, MAX_WEAPONS, MAX_PASSIVES, LUCK } from './data/weapons.js'
 import { computeStats } from './stats.js'
 
 /** Every valid upgrade right now: [{ type: 'weapon' | 'passive', id, lvl (level after picking), isNew, weight }]. */
@@ -25,7 +25,7 @@ const FILLERS = [{ type: 'heal', id: 'heal', lvl: 0, isNew: false }, { type: 'sc
 
 /** Pick n different offers (weighted). When the build is complete, offers a repair or a handful of scrap instead. */
 export function rollOffers(s, n) {
-  if (n == null) n = 3 + (s.rng() < s.stats.luck * 0.12 ? 1 : 0)
+  if (n == null) n = 3 + (s.rng() < s.stats.luck * LUCK.card ? 1 : 0)
   const pool = buildPool(s), out = []
   while (out.length < n && pool.length) {
     let total = 0

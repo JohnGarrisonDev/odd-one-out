@@ -31,8 +31,28 @@ export const EVENTS = [
   { at: 600, kind: 'boss', type: 'template', final: true },
 ]
 
-// Endless mode: after the Template falls, a boss returns every this many seconds, tougher each time.
-export const ENDLESS_BOSS_EVERY = 150
+// Bosses size you up (The Template, and the bosses that come back in endless mode).
+// 1. On arrival its HP is multiplied by (dps / ref) ^ exp, kept within [start[0], start[1]], where dps is the director's
+//    running average of your damage per second over about `tau` seconds.
+// 2. Once the fight is on (it has been hurt, or is within `near` of you) it watches how fast you hurt it for `window`
+//    seconds, then rescales its HP once (by a factor within `adjust`) so the whole fight should last about `fight` seconds.
+// Its total HP multiplier always stays within [min, max]. A tougher boss also attacks a little more often:
+// patternCd times multiplier ^ -pressure, kept within cdRange.
+export const POWER = { tau: 30, ref: 12000, exp: 1, start: [0.7, 1.3], near: 320, window: 20, fight: 65, adjust: [0.5, 1.25], min: 0.4, max: 1.6, pressure: 0.3, cdRange: [0.85, 1.15] }
+
+// Endless mode: after the Template falls, the run changes shape instead of only getting bigger.
+// - Every `waveEvery` seconds a new themed wave takes over the spawn mix (cycling through ENDLESS_WAVES), with a banner.
+// - Every `packEvery` seconds a pack of elites arrives (more each time, up to `packMax`), drawn from the wave's types.
+// - Every `bossEvery` seconds an old boss comes back (ENDLESS_BOSSES in turn), sized up to your build like the Template,
+//   from a base of `bossHp` whichever boss it is, plus `bossGrow` more HP for each reprise so far.
+export const ENDLESS = { waveEvery: 45, packEvery: 40, packMin: 2, packMax: 6, bossEvery: 120, bossHp: 12000, bossGrow: 0.35 }
+export const ENDLESS_WAVES = [
+  { name: 'Rush hour', mix: { runner: 6, walker: 3, mini: 2 }, elite: ['runner', 'walker'] },
+  { name: 'Ram raid', mix: { charger: 4, walker: 4, runner: 2 }, elite: ['charger'] },
+  { name: 'Stamp duty', mix: { shooter: 3, walker: 5, tank: 1 }, elite: ['shooter', 'tank'] },
+  { name: 'Bulk order', mix: { tank: 3, splitter: 3, walker: 3 }, elite: ['tank', 'splitter'] },
+  { name: 'Everything at once', mix: { walker: 5, runner: 4, tank: 2, splitter: 2, shooter: 1.6, charger: 2 }, elite: ['tank', 'charger', 'splitter'] },
+]
 export const ENDLESS_BOSSES = ['foreman', 'auditor', 'template']
 
 const mins = (t) => t / 60
@@ -43,7 +63,7 @@ export function dmgScale(t) { return 1 + 0.07 * mins(t) }
 /** Enemy move speed multiplier at time t. */
 export function speedScale(t) { return 1 + Math.min(0.3, 0.02 * mins(t)) }
 /** Spawn rate multiplier in endless mode. */
-export function endlessScale(t) { return t <= RUN_LENGTH ? 1 : 1 + (t - RUN_LENGTH) / 240 }
+export function endlessScale(t) { return t <= RUN_LENGTH ? 1 : 1 + (t - RUN_LENGTH) / 420 }
 
 /** XP needed to go from `level` to `level + 1`. */
 export function xpNeed(level) { const l = level - 1; return Math.floor(5 + 6 * l + 0.4 * l * l) }

@@ -28,12 +28,12 @@ Add `?debug` to the URL for a console hook, `window.__game` (start a run, let a 
 node --test tests/
 ```
 
-22 tests: upgrade offers, save data, the wave timeline, and headless full-length runs played by bots (no NaN, no exceptions, difficulty ramps, win and endless flows).
+27 tests: upgrade offers, save data, the wave timeline, boss sizing, Lucky Nut, and headless full-length runs played by bots (no NaN, no exceptions, difficulty ramps, win and endless flows).
 
 Two hand tools for balance work:
 
 ```
-node tools/balance.mjs [runs] [minutes]   # bots play many runs; prints survival times, levels, damage per weapon
+node tools/balance.mjs [runs] [minutes]   # bots play many runs; prints survival, Template fights, damage share per weapon
 node tools/dps.mjs [startSecond]          # each weapon alone against the crowd at a given minute
 ```
 

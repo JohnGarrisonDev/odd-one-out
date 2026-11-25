@@ -6,7 +6,8 @@ import { makeBot } from '../src/game/bot.js'
 import { WEAPONS } from '../src/game/data/weapons.js'
 import { ENEMIES } from '../src/game/data/enemies.js'
 import { spawnEnemy, killEnemy, hitPlayer, spawnPickup } from '../src/game/combat.js'
-import { hpScale } from '../src/game/data/timeline.js'
+import { hpScale, POWER, ENDLESS, ENDLESS_WAVES } from '../src/game/data/timeline.js'
+import { rollOffers } from '../src/game/upgrades.js'
 
 function assertFinite(s) {
   const p = s.player
@@ -136,4 +137,73 @@ test('beating the Template wins; keep going switches to endless', () => {
   play(s, bot, 200, (r) => { r.player.hp = 1e9 })
   assertFinite(s)
   assert.ok(s.boss || s.bossKills.foreman, 'endless mode sends bosses back')
+})
+
+test('The Template sizes you up: tougher for a strong build, softer for a weak one, always within bounds', () => {
+  const arrive = (dps) => {
+    const s = createRun({ seed: 10 })
+    s.t = 599.9; s.player.hp = 1e9
+    for (let i = 0; i < 30 && !s.finalBoss; i++) { s.dir.dps = dps; s.dir.dealt = s.dealt; step(s, STEP) }
+    return s
+  }
+  const base = ENEMIES.template.hp
+  const weak = arrive(500).finalBoss.maxHp, strong = arrive(1e6).finalBoss.maxHp
+  assert.ok(weak < base && strong > base, `weak ${weak} < ${base} < strong ${strong}`)
+  assert.ok(weak >= base * POWER.min && strong <= base * POWER.max)
+  // Then it watches the fight and rescales once, keeping the bar where it was.
+  const s = arrive(POWER.ref), b = s.finalBoss
+  b.x = s.player.x + 100; b.y = s.player.y
+  let frac = 1, steps = 0
+  while (b.calT < 0 || s.t - b.calT < POWER.window + 0.1) {
+    b.hp -= 5; frac = b.hp / b.maxHp; s.player.hp = 1e9
+    step(s, STEP); steps++
+    if (s.mode !== 'play') { s.mode = 'play'; s.pendingLevels = 0; s.crates = 0 }
+    assert.ok(steps < 60 * 40, 'sizing finishes')
+  }
+  assert.equal(s.dir.sizing, null)
+  assert.ok(b.maxHp >= base * POWER.min - 1 && b.maxHp <= base * POWER.max + 1, `maxHp ${b.maxHp}`)
+  assert.ok(Math.abs(b.hp / b.maxHp - frac) < 0.02, 'the HP bar does not jump')
+  assert.ok(b.cdMul >= POWER.cdRange[0] && b.cdMul <= POWER.cdRange[1])
+})
+
+test('endless mode brings themed waves, elite packs and sized-up boss reprises', () => {
+  const s = createRun({ seed: 21 })
+  s.t = 600; s.won = true; s.mode = 'won'; s.dir.next = s.dir.next.map(() => Infinity)
+  keepGoing(s)
+  const banners = new Set(), types = new Set()
+  let elites = 0, bosses = 0, last = null
+  for (let i = 0; i < 60 * 300; i++) {
+    s.player.hp = 1e9
+    step(s, STEP)
+    if (s.mode !== 'play') { s.mode = 'play'; s.pendingLevels = 0; s.crates = 0; s.offers = null }
+    if (s.bannerT > 0) banners.add(s.banner)
+    for (const e of s.enemies) { types.add(e.type); if (e.elite && !e.seen) { e.seen = true; elites++ } }
+    if (s.boss && s.boss !== last) { last = s.boss; bosses++; assert.ok(s.boss.maxHp <= ENDLESS.bossHp * POWER.max * (1 + ENDLESS.bossGrow * 3)) }
+    if (i % 600 === 0) assertFinite(s)
+  }
+  for (const w of ENDLESS_WAVES.slice(0, 5)) assert.ok(banners.has(w.name), `wave "${w.name}" announced`)
+  assert.ok(elites >= 6, `elite packs arrive (${elites})`)
+  assert.ok(bosses >= 1, 'an old boss comes back')
+  assert.ok(types.has('charger') && types.has('shooter') && types.has('tank'), 'the mix changes')
+})
+
+test('Lucky Nut: more drops, the odd crate, and more 4th cards', () => {
+  const drops = (luck) => {
+    const s = createRun({ seed: 31 })
+    s.stats.luck = luck
+    const counts = { crate: 0, heart: 0 }
+    for (let i = 0; i < 6000; i++) {
+      const e = spawnEnemy(s, 'walker', 300, 0)
+      killEnemy(s, e)
+      for (const p of s.pickups) if (!p.dead && counts[p.kind] != null) { counts[p.kind]++; p.dead = true }
+      s.pickups.length = 0; s.boltCount = 0; s.enemies.length = 0
+    }
+    let four = 0
+    for (let i = 0; i < 400; i++) if (rollOffers(s).length === 4) four++
+    return { ...counts, four }
+  }
+  const none = drops(0), full = drops(5)
+  assert.equal(none.crate, 0, 'no luck, no stray crates')
+  assert.ok(full.crate > 0 && full.heart > none.heart * 2, `luck 5 drops more (${JSON.stringify(full)} vs ${JSON.stringify(none)})`)
+  assert.equal(none.four, 0); assert.ok(full.four > 300, 'luck 5 shows a 4th card most of the time')
 })

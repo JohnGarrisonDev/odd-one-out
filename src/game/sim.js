@@ -33,7 +33,7 @@ export function createRun(opts = {}) {
     free: { enemies: [], shots: [], eshots: [], pickups: [], hazards: [], mines: [], pools: [], parts: [], texts: [], rings: [], zaps: [] },
     grid: makeGrid(64, 64), tmp: { x: 0, y: 0 }, tok: 0, boltCount: 0, mergeIdx: 0,
     dir: makeDirector(), boss: null, finalBoss: null, bossKills: {}, scaleCap: RUN_LENGTH,
-    kills: 0, scrapFound: 0, dmgBy: {}, dmgTaken: 0, events: [], shake: 0, flash: 0, banner: '', bannerT: 0,
+    kills: 0, scrapFound: 0, dealt: 0, dmgBy: {}, dmgTaken: 0, events: [], shake: 0, flash: 0, banner: '', bannerT: 0,
     won: false, endless: false, winT: 0, deadT: 0, lookT: 0,
   }
   return s

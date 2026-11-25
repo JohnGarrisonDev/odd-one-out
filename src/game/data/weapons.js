@@ -13,8 +13,8 @@ export const WEAPONS = {
       { dmg: 10, cd: 0.8, count: 1, pierce: 0, speed: 560, text: 'Zaps the nearest Matcher.' },
       { dmg: 12, cd: 0.75, count: 2, pierce: 0, speed: 560, text: 'Fires 2 sparks. A bit more damage.' },
       { dmg: 16, cd: 0.65, count: 2, pierce: 1, speed: 600, text: 'Faster, and sparks pierce 1 Matcher.' },
-      { dmg: 21, cd: 0.6, count: 3, pierce: 1, speed: 600, text: 'Fires 3 sparks. More damage.' },
-      { dmg: 28, cd: 0.48, count: 4, pierce: 2, speed: 640, text: 'Fires 4 sparks, faster, piercing 2.' },
+      { dmg: 20, cd: 0.6, count: 3, pierce: 1, speed: 600, text: 'Fires 3 sparks. More damage.' },
+      { dmg: 24, cd: 0.48, count: 4, pierce: 2, speed: 640, text: 'Fires 4 sparks, faster, piercing 2.' },
     ],
   },
   gears: {
@@ -22,9 +22,9 @@ export const WEAPONS = {
     levels: [
       { dmg: 9, count: 2, radius: 62, size: 14, rot: 2.9, tick: 0.5, kb: 110, text: 'Two cogs circle you and grind what they touch.' },
       { dmg: 11, count: 3, radius: 66, size: 14, rot: 3.0, tick: 0.5, kb: 110, text: 'A third cog.' },
-      { dmg: 15, count: 3, radius: 76, size: 16, rot: 3.3, tick: 0.45, kb: 130, text: 'Bigger, faster, wider orbit.' },
-      { dmg: 20, count: 4, radius: 84, size: 17, rot: 3.5, tick: 0.45, kb: 130, text: 'A fourth cog. More damage.' },
-      { dmg: 28, count: 5, radius: 96, size: 19, rot: 3.9, tick: 0.4, kb: 150, text: 'Five big cogs. A proper grinder.' },
+      { dmg: 24, count: 3, radius: 92, size: 17, rot: 3.3, tick: 0.45, kb: 130, text: 'Bigger, faster, wider orbit.' },
+      { dmg: 36, count: 4, radius: 106, size: 18, rot: 3.5, tick: 0.45, kb: 130, text: 'A fourth cog. More damage.' },
+      { dmg: 54, count: 5, radius: 122, size: 21, rot: 3.9, tick: 0.4, kb: 150, text: 'Five big cogs. A proper grinder.' },
     ],
   },
   wrench: {
@@ -32,9 +32,9 @@ export const WEAPONS = {
     levels: [
       { dmg: 16, cd: 1.7, count: 1, speed: 460, out: 0.5, size: 16, text: 'Thrown, comes back, hits everything both ways.' },
       { dmg: 22, cd: 1.6, count: 1, speed: 480, out: 0.55, size: 17, text: 'More damage, flies further.' },
-      { dmg: 27, cd: 1.6, count: 2, speed: 480, out: 0.55, size: 17, text: 'Throws 2 wrenches.' },
-      { dmg: 36, cd: 1.4, count: 2, speed: 510, out: 0.6, size: 20, text: 'Bigger wrenches, thrown more often.' },
-      { dmg: 48, cd: 1.2, count: 3, speed: 540, out: 0.62, size: 23, text: 'Throws 3 huge wrenches.' },
+      { dmg: 34, cd: 1.6, count: 2, speed: 480, out: 0.55, size: 17, text: 'Throws 2 wrenches.' },
+      { dmg: 52, cd: 1.4, count: 2, speed: 510, out: 0.6, size: 20, text: 'Bigger wrenches, thrown more often.' },
+      { dmg: 72, cd: 1.2, count: 3, speed: 540, out: 0.62, size: 23, text: 'Throws 3 huge wrenches.' },
     ],
   },
   chain: {
@@ -60,11 +60,11 @@ export const WEAPONS = {
   mines: {
     id: 'mines', name: 'Bolt Mines', kind: 'mine', color: '#FF8FC7',
     levels: [
-      { dmg: 20, cd: 1.7, count: 1, blast: 62, life: 14, text: 'Drops mines behind you. Matchers do not look down.' },
-      { dmg: 26, cd: 1.6, count: 1, blast: 70, life: 14, text: 'Bigger blast, more damage.' },
-      { dmg: 32, cd: 1.5, count: 2, blast: 74, life: 14, text: 'Drops 2 mines at a time.' },
-      { dmg: 38, cd: 1.3, count: 2, blast: 86, life: 14, text: 'Bigger blast, dropped more often.' },
-      { dmg: 46, cd: 1.1, count: 3, blast: 96, life: 14, text: 'Drops 3 huge mines.' },
+      { dmg: 17, cd: 1.8, count: 1, blast: 58, life: 14, text: 'Drops mines behind you. Matchers do not look down.' },
+      { dmg: 21, cd: 1.7, count: 1, blast: 64, life: 14, text: 'Bigger blast, more damage.' },
+      { dmg: 25, cd: 1.6, count: 2, blast: 68, life: 14, text: 'Drops 2 mines at a time.' },
+      { dmg: 29, cd: 1.45, count: 2, blast: 76, life: 14, text: 'Bigger blast, dropped more often.' },
+      { dmg: 34, cd: 1.3, count: 3, blast: 84, life: 14, text: 'Drops 3 huge mines.' },
     ],
   },
   pulse: {
@@ -72,19 +72,19 @@ export const WEAPONS = {
     levels: [
       { dmg: 9, cd: 3.0, radius: 110, kb: 330, text: 'A shove in every direction. Buys you room.' },
       { dmg: 13, cd: 2.8, radius: 125, kb: 360, text: 'Wider, harder shove.' },
-      { dmg: 17, cd: 2.5, radius: 140, kb: 390, text: 'Pulses more often.' },
-      { dmg: 23, cd: 2.2, radius: 160, kb: 420, text: 'Wider. More damage.' },
-      { dmg: 32, cd: 1.8, radius: 185, kb: 460, text: 'A huge pulse, nearly twice as often as at first.' },
+      { dmg: 25, cd: 2.5, radius: 150, kb: 390, text: 'Pulses more often.' },
+      { dmg: 34, cd: 2.2, radius: 172, kb: 420, text: 'Wider. More damage.' },
+      { dmg: 48, cd: 1.8, radius: 198, kb: 460, text: 'A huge pulse, nearly twice as often as at first.' },
     ],
   },
   oil: {
     id: 'oil', name: 'Hot Oil', kind: 'pool', color: '#B48CFF', needs: 'five',
     levels: [
-      { dmg: 5, cd: 3.4, count: 1, radius: 58, life: 3.5, tick: 0.35, slow: 0.5, text: 'Lobs a puddle that slows and burns.' },
-      { dmg: 7, cd: 3.2, count: 1, radius: 66, life: 4.0, tick: 0.35, slow: 0.5, text: 'Bigger puddle that lasts longer.' },
-      { dmg: 8, cd: 3.0, count: 2, radius: 68, life: 4.0, tick: 0.32, slow: 0.45, text: 'Lobs 2 puddles.' },
-      { dmg: 11, cd: 2.7, count: 2, radius: 78, life: 4.5, tick: 0.3, slow: 0.4, text: 'Bigger, hotter, stickier.' },
-      { dmg: 14, cd: 2.3, count: 3, radius: 88, life: 5.0, tick: 0.28, slow: 0.35, text: 'Lobs 3 big puddles.' },
+      { dmg: 4, cd: 3.4, count: 1, radius: 56, life: 3.5, tick: 0.35, slow: 0.5, text: 'Lobs a puddle that slows and burns.' },
+      { dmg: 6, cd: 3.2, count: 1, radius: 62, life: 4.0, tick: 0.35, slow: 0.5, text: 'Bigger puddle that lasts longer.' },
+      { dmg: 6, cd: 3.0, count: 2, radius: 64, life: 4.0, tick: 0.32, slow: 0.45, text: 'Lobs 2 puddles.' },
+      { dmg: 7, cd: 2.7, count: 2, radius: 72, life: 4.5, tick: 0.3, slow: 0.4, text: 'Bigger, hotter, stickier.' },
+      { dmg: 8, cd: 2.3, count: 3, radius: 80, life: 5.0, tick: 0.28, slow: 0.35, text: 'Lobs 3 big puddles.' },
     ],
   },
 }
@@ -101,5 +101,10 @@ export const PASSIVES = {
   spares: { id: 'spares', name: 'Spare Parts', stat: 'amount', per: 1, max: 2, color: '#FFC93C', text: '+1 projectile for every weapon.' },
   lens: { id: 'lens', name: 'Wide Lens', stat: 'area', per: 0.1, max: 5, color: '#2FD6A3', text: '+10% area and size for every weapon.' },
   armour: { id: 'armour', name: 'Dented Armour', stat: 'armour', per: 1, max: 5, color: '#A79DB5', text: 'Every hit hurts 1 less.' },
-  luck: { id: 'luck', name: 'Lucky Nut', stat: 'luck', per: 1, max: 5, color: '#FFC93C', text: 'More drops, and sometimes a 4th upgrade card.' },
+  luck: { id: 'luck', name: 'Lucky Nut', stat: 'luck', per: 1, max: 5, color: '#FFC93C', text: 'More drops, the odd free crate, and often a 4th upgrade card.' },
+}
+
+// What each level of Lucky Nut (stat 'luck') does. drops: +x to the heart / magnet / bomb / scrap drop chance multiplier.
+// crate: chance per ordinary Matcher broken to drop a crate (a free upgrade). card: chance of a 4th card on each level-up.
+export const LUCK = { drops: 0.4, crate: 0.0002, card: 0.18
 }

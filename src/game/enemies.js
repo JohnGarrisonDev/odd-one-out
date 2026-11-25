@@ -72,7 +72,7 @@ function bossAI(s, e, dt, nx, ny, dist) {
     if (e.t2 >= 0.95) { e.state = 2; e.t2 = 0; emit(s, 'dash') }
   } else if (e.state === 2) { // dash
     e.mx = e.dx * def.dashSpeed; e.my = e.dy * def.dashSpeed
-    if (e.t2 >= 0.62) { e.state = 0; e.t1 = def.patternCd }
+    if (e.t2 >= 0.62) { e.state = 0; e.t1 = def.patternCd * e.cdMul }
   } else if (e.state === 3) { // wind-up
     if (e.t2 >= 0.7) { e.state = 4; e.t2 = 0 }
   } else if (e.state === 4) {
@@ -107,7 +107,7 @@ function bossAI(s, e, dt, nx, ny, dist) {
     } else if (pat === 'summon') {
       spawnRing(s, enraged ? 20 : 16)
     }
-    if (done) { e.state = 0; e.t1 = def.patternCd }
+    if (done) { e.state = 0; e.t1 = def.patternCd * e.cdMul }
   }
 }
 

@@ -1,8 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { PHASES, EVENTS, RUN_LENGTH, hpScale, dmgScale, speedScale, xpNeed } from '../src/game/data/timeline.js'
+import { PHASES, EVENTS, RUN_LENGTH, ENDLESS, ENDLESS_WAVES, ENDLESS_BOSSES, POWER, hpScale, dmgScale, speedScale, endlessScale, xpNeed } from '../src/game/data/timeline.js'
 import { ENEMIES } from '../src/game/data/enemies.js'
-import { phaseAt } from '../src/game/director.js'
+import { phaseAt, powerMul } from '../src/game/director.js'
 
 test('timeline phases are in order and only name real, non-boss enemies', () => {
   let prev = 0
@@ -43,4 +43,23 @@ test('enemy table is sane', () => {
     if (e.split) assert.ok(ENEMIES[e.split.type] && !ENEMIES[e.split.type].split, 'splitters split into things that do not split')
   }
   assert.ok(Object.values(ENEMIES).filter((e) => !e.boss).length >= 6)
+})
+
+test('endless mode data: waves name real enemies, packs and bosses are bounded', () => {
+  assert.ok(ENDLESS_WAVES.length >= 3)
+  for (const w of ENDLESS_WAVES) {
+    assert.ok(w.name && Object.keys(w.mix).length >= 2, 'a wave is a named mix')
+    for (const type of [...Object.keys(w.mix), ...w.elite]) { assert.ok(ENEMIES[type], `${type} exists`); assert.ok(!ENEMIES[type].boss && ENEMIES[type].ai !== 'drift', `${type} can walk in from the edge`) }
+  }
+  assert.ok(ENDLESS.packMin >= 1 && ENDLESS.packMax >= ENDLESS.packMin && ENDLESS.packMax <= 8)
+  for (const b of ENDLESS_BOSSES) assert.ok(ENEMIES[b].boss)
+  assert.ok(endlessScale(RUN_LENGTH + 600) < 3, 'endless leans on variety, not only on bigger numbers')
+})
+
+test('bosses that size you up stay within bounds', () => {
+  assert.ok(POWER.min > 0 && POWER.min < 1 && POWER.max > 1 && POWER.max <= 2)
+  assert.ok(POWER.start[0] >= POWER.min && POWER.start[1] <= POWER.max)
+  assert.equal(powerMul(0), POWER.start[0]); assert.equal(powerMul(1e9), POWER.start[1])
+  assert.ok(powerMul(POWER.ref) > 0.99 && powerMul(POWER.ref) < 1.01, 'a typical build gets the base HP')
+  for (let d = 0; d < 30000; d += 500) assert.ok(powerMul(d + 500) >= powerMul(d), 'more damage never means an easier boss')
 })
