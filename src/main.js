@@ -1,6 +1,7 @@
 // Odd One Out: entry point. Owns the frame loop and glues the pieces together:
 //   game/sim.js (rules, no DOM)  ->  render.js (canvas)  +  ui.js (DOM menus and HUD)  +  audio.js  +  input.js
 import { makeStore, wireChrome } from '../kit/kit.js'
+import { tellUs } from '../kit/talk.js'
 import { createRun, step, chooseOffer, rerollOffers, closeCrate, keepGoing, summarize, debug as simDebug } from './game/sim.js'
 import { normalizeSave, defaultSave, applyRun, buyWorkshop, buyCharacter, unlockedWeapons } from './game/save.js'
 import { applyOffer } from './game/upgrades.js'
@@ -12,6 +13,7 @@ import { play, playEvents } from './audio.js'
 const stage = document.getElementById('stage')
 const canvas = document.getElementById('game')
 wireChrome({ stage })
+tellUs(document.getElementById('tell-us'), { game: 'odd-one-out', issueUrl: 'https://github.com/JohnGarrisonDev/odd-one-out/issues/new?template=feedback.yml' })
 
 // ---- save data (one JSON blob in localStorage, see game/save.js for the shape)
 const store = makeStore('odd-one-out', {})

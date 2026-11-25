@@ -2,6 +2,13 @@
 
 Newest first. Written for players.
 
+## 1.2.0 — 2026-11-25
+
+Tell us what you think.
+
+- A new **Tell us** card under the game: a thumbs up or down and a few one-tap notes (too hard, too easy, broke on my phone...). Anonymous, no account, no typing.
+- A Privacy link in the footer explains exactly what is counted.
+
 ## 1.1.0 — 2026-11-24
 
 A balance update. Every weapon should now be worth taking, and the last fight should be fair whatever you built.

@@ -20,6 +20,7 @@ main.js  --owns-->  run state (plain object from game/sim.js createRun)
 ```
 
 - **The simulation (`src/game/`) has no DOM access** and runs in node. Keep it that way: tests and balance tools depend on it. `kit/kit.js` touches `window` on import, so nothing under `src/game/` may import it (that is why `util.js` has its own copy of the RNG).
+- `kit/talk.js` (hub copy, do not edit): `main.js` calls `tellUs` once for the `#tell-us` card under the stage (anonymous thumbs and one-tap notes; hidden when the API is unreachable). No daily, so no `dailyTalk`.
 - `step(run, dt)` only advances in mode `'play'`. Modes: `play`, `levelup`, `crate`, `won`, `dead`. The UI resolves the modal modes by calling `chooseOffer`, `closeCrate`, `keepGoing`. "Paused" is not a sim mode: main.js just stops calling `step`.
 - dt is variable (main.js splits long frames into steps of at most 1/30 s; tests use 1/60). All sim code multiplies by dt.
 - Randomness: `run.rng` for gameplay, `run.fxRng` for cosmetics. Same seed + same inputs = same run (there is a test).
