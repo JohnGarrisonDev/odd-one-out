@@ -8,6 +8,8 @@
     "Arcade"
   ],
   "daily": false,
+  "difficulty": 4,
+  "difficultyNote": "Most first runs end around three minutes. Beating the final boss takes workshop upgrades.",
   "verb": "Survive",
   "tone": "ink",
   "players": "1 player",
