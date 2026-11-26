@@ -62,3 +62,12 @@ test('runs update records, totals and achievements once', () => {
   assert.deepEqual(b.records, []); assert.deepEqual(b.achievements, [])
   assert.equal(s.totals.runs, 2); assert.equal(s.best.time, 320)
 })
+
+test('1.4.0 music setting: on by default, kept when off, and a 1.3.0 save without it gets music on', () => {
+  assert.equal(defaultSave().settings.music, true)
+  const old = { v: 1, scrap: 42, settings: { damageNumbers: false, shake: true } } // a 1.3.0 blob
+  const s = normalizeSave(old)
+  assert.deepEqual(s.settings, { damageNumbers: false, shake: true, music: true }); assert.equal(s.scrap, 42)
+  s.settings.music = false
+  assert.equal(normalizeSave(JSON.parse(JSON.stringify(s))).settings.music, false)
+})

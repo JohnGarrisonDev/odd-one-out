@@ -51,6 +51,7 @@ src/ui.js             DOM menus and HUD inside the stage
 src/game.css          styles for the HUD and menus
 src/input.js          keyboard + floating stick
 src/audio.js          event name -> synth sound, rate limited
+src/music.js          a synth music loop (kit sfx, no audio files) that grows with the crowd
 src/game/             the simulation. No DOM, runs in node.
   sim.js              run state, step(), player, pickups, level-ups, summary
   combat.js           spawn / hurt / kill, pickups, effects, enemy shots

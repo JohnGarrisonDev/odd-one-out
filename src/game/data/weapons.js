@@ -32,9 +32,9 @@ export const WEAPONS = {
     levels: [
       { dmg: 16, cd: 1.7, count: 1, speed: 460, out: 0.5, size: 16, text: 'Thrown, comes back, hits everything both ways.' },
       { dmg: 22, cd: 1.6, count: 1, speed: 480, out: 0.55, size: 17, text: 'More damage, flies further.' },
-      { dmg: 34, cd: 1.6, count: 2, speed: 480, out: 0.55, size: 17, text: 'Throws 2 wrenches.' },
-      { dmg: 52, cd: 1.4, count: 2, speed: 510, out: 0.6, size: 20, text: 'Bigger wrenches, thrown more often.' },
-      { dmg: 72, cd: 1.2, count: 3, speed: 540, out: 0.62, size: 23, text: 'Throws 3 huge wrenches.' },
+      { dmg: 38, cd: 1.6, count: 2, speed: 480, out: 0.55, size: 17, text: 'Throws 2 wrenches.' },
+      { dmg: 60, cd: 1.4, count: 2, speed: 510, out: 0.6, size: 20, text: 'Bigger wrenches, thrown more often.' },
+      { dmg: 86, cd: 1.2, count: 3, speed: 540, out: 0.62, size: 23, text: 'Throws 3 huge wrenches.' },
     ],
   },
   chain: {
@@ -62,9 +62,9 @@ export const WEAPONS = {
     levels: [
       { dmg: 17, cd: 1.8, count: 1, blast: 58, life: 14, text: 'Drops mines behind you. Matchers do not look down.' },
       { dmg: 21, cd: 1.7, count: 1, blast: 64, life: 14, text: 'Bigger blast, more damage.' },
-      { dmg: 25, cd: 1.6, count: 2, blast: 68, life: 14, text: 'Drops 2 mines at a time.' },
-      { dmg: 29, cd: 1.45, count: 2, blast: 76, life: 14, text: 'Bigger blast, dropped more often.' },
-      { dmg: 34, cd: 1.3, count: 3, blast: 84, life: 14, text: 'Drops 3 huge mines.' },
+      { dmg: 24, cd: 1.6, count: 2, blast: 68, life: 14, text: 'Drops 2 mines at a time.' },
+      { dmg: 27, cd: 1.45, count: 2, blast: 76, life: 14, text: 'Bigger blast, dropped more often.' },
+      { dmg: 31, cd: 1.3, count: 3, blast: 80, life: 14, text: 'Drops 3 huge mines.' },
     ],
   },
   pulse: {
@@ -83,8 +83,8 @@ export const WEAPONS = {
       { dmg: 4, cd: 3.4, count: 1, radius: 56, life: 3.5, tick: 0.35, slow: 0.5, text: 'Lobs a puddle that slows and burns.' },
       { dmg: 6, cd: 3.2, count: 1, radius: 62, life: 4.0, tick: 0.35, slow: 0.5, text: 'Bigger puddle that lasts longer.' },
       { dmg: 6, cd: 3.0, count: 2, radius: 64, life: 4.0, tick: 0.32, slow: 0.45, text: 'Lobs 2 puddles.' },
-      { dmg: 7, cd: 2.7, count: 2, radius: 72, life: 4.5, tick: 0.3, slow: 0.4, text: 'Bigger, hotter, stickier.' },
-      { dmg: 8, cd: 2.3, count: 3, radius: 80, life: 5.0, tick: 0.28, slow: 0.35, text: 'Lobs 3 big puddles.' },
+      { dmg: 7, cd: 2.7, count: 2, radius: 72, life: 4.5, tick: 0.32, slow: 0.4, text: 'Bigger, hotter, stickier.' },
+      { dmg: 8, cd: 2.3, count: 3, radius: 80, life: 5.0, tick: 0.31, slow: 0.35, text: 'Lobs 3 big puddles.' },
     ],
   },
 }

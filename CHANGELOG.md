@@ -2,6 +2,15 @@
 
 Newest first. Written for players.
 
+## 1.4.0 — 2026-11-26
+
+Music, and a small balance pass.
+- **Music.** A little synth loop plays during runs. It starts with a bass line and adds hats, a snare and a jangly arpeggio as the crowd grows, and turns darker while a boss is on the field. It stops when you pause. Turn it off with the new **Music** switch in the pause menu, or mute everything with the speaker button as before.
+- **Wrench-a-rang** hits harder from level 3 up (38 / 60 / 86 at levels 3 to 5, was 34 / 52 / 72). It was the weakest weapon in a fully upgraded workshop.
+- **Hot Oil** burns a little slower at levels 4 and 5, and **Bolt Mines** hit a touch softer from level 3 with a slightly smaller top-level blast. Both were still a few points ahead of everything else.
+- The game-over line now adds up: "1:35 ... 8:25 short of the Template" (it could be a second off).
+- Your workshop, loadouts, records, achievements and settings carry over unchanged (music starts switched on).
+
 ## 1.3.0 — 2026-11-26
 
 Plays better on phones:

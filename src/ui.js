@@ -162,7 +162,7 @@ export function makeUI(stage, renderer, on) {
     pause.textContent = ''
     pause.append(el('<h2>Paused</h2>'), el(`<p class="hint">${fmtTime(s.t)} · level ${s.level} · ${fmtNum(s.kills)} broken</p>`), buildList(s, true))
     const toggles = el('<div class="toggles"></div>')
-    for (const [key, label] of [['damageNumbers', 'Damage numbers'], ['shake', 'Screen shake']]) {
+    for (const [key, label] of [['damageNumbers', 'Damage numbers'], ['shake', 'Screen shake'], ['music', 'Music']]) {
       const t = el(`<button type="button" class="toggle" role="switch" aria-checked="${save.settings[key]}"><i></i>${label}</button>`)
       t.addEventListener('click', () => { on.setting(key, !save.settings[key]); t.setAttribute('aria-checked', String(save.settings[key])) })
       toggles.append(t)
@@ -200,7 +200,7 @@ export function makeUI(stage, renderer, on) {
     const head = run.won ? (run.endless ? 'Odd to the <em>end</em>' : 'Still <em>odd!</em>') : 'You got <em>matched</em>'
     const line = run.won ? `You beat The Template${run.endless ? ' and kept going' : ''}. Nothing about that was standard.`
       : run.time < 60 ? 'They got you early. Keep moving, and grab the bolts they drop.'
-        : run.time < RUN_LENGTH ? `You stayed odd for ${fmtTime(run.time)}. ${fmtTime(RUN_LENGTH - run.time)} short of the Template.` : 'So close. The Template was right there.'
+        : run.time < RUN_LENGTH ? `You stayed odd for ${fmtTime(run.time)}. ${fmtTime(RUN_LENGTH - Math.floor(run.time))} short of the Template.` : 'So close. The Template was right there.'
     over.append(el(`<h2>${head}</h2>`), el(`<p class="hint">${line}</p>`), statGrid(run, result))
     const row = el('<div class="row"></div>')
     row.append(btn('Play again', 'primary big', () => on.play(), 'data-focus'), btn(`Workshop <span class="scrap">${SCRAP}${fmtNum(save.scrap)}</span>`, '', () => on.workshop()), btn('Title', '', () => on.title()))

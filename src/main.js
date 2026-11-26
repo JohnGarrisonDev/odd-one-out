@@ -9,6 +9,7 @@ import { makeRenderer } from './render.js'
 import { makeInput } from './input.js'
 import { makeUI } from './ui.js'
 import { play, playEvents } from './audio.js'
+import { updateMusic, resetMusic, setMusic } from './music.js'
 
 const stage = document.getElementById('stage')
 const canvas = document.getElementById('game')
@@ -43,7 +44,7 @@ const ui = makeUI(stage, renderer, {
   giveUp: () => { if (run) { paused = false; finishRun() } },
   keepGoing: () => { if (run && keepGoing(run)) { ui.show(null); input.active = true } },
   endRun: () => finishRun(),
-  setting: (key, value) => { save.settings[key] = value; persist() },
+  setting: (key, value) => { save.settings[key] = value; persist(); if (key === 'music') setMusic(value) },
   resetSave: () => { save = defaultSave(); persist(); ui.showTitle(save) },
 })
 
@@ -124,13 +125,24 @@ function frame(now) {
       playEvents(run.events)
       if (run.mode === 'dead' && run.deadT > 1.1 && !overShown) finishRun()
     }
+    if (run.mode === 'play' && !paused && !banked) updateMusic(intensity(run)); else resetMusic()
     renderer.draw(run, { time: clock, numbers: save.settings.damageNumbers, shake: save.settings.shake, stick: input.stick })
     if (!banked) ui.updateHud(run)
   } else {
     renderer.drawTitle(clock, save.char)
+    resetMusic()
   }
 }
+const mood = { crowd: 0, boss: false, final: false }
+/** How busy the arena is, for the music layers (no allocation: this runs every frame). */
+function intensity(s) {
+  let boss = false
+  for (let i = 0; i < s.enemies.length; i++) if (s.enemies[i].boss) { boss = true; break }
+  mood.crowd = s.enemies.length; mood.boss = boss; mood.final = !!s.finalBoss
+  return mood
+}
 
+setMusic(save.settings.music)
 ui.showTitle(save)
 requestAnimationFrame(frame)
 

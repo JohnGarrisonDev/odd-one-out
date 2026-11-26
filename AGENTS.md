@@ -16,6 +16,7 @@ main.js  --owns-->  run state (plain object from game/sim.js createRun)
    |-- render.js   reads the state, draws the canvas. Never changes state.
    |-- ui.js       DOM overlays + HUD. Calls back into main.js (the `on` object), which calls sim functions.
    |-- audio.js    sim pushes event names into run.events; audio maps them to kit sfx with a rate limit.
+   |-- music.js    synth music loop (1.4.0), fed the crowd size / boss state each frame while a run is playing.
    '-- input.js    keyboard + floating stick -> one vector.
 ```
 
@@ -28,6 +29,10 @@ main.js  --owns-->  run state (plain object from game/sim.js createRun)
 - Renderer: unchanging sprites are drawn once to off-screen canvases (`makeCanvas`, keyed in `sprites`) and stamped. The cache is rebuilt when the stage size changes. Hit flash uses a whitened copy of the sprite.
 - World scale: the shorter side of the stage shows 620 world units (landscape) or 500 wide (portrait). `run.view` holds the visible size in world units; the director spawns just outside it.
 - Save: one blob, `oddvale:odd-one-out`. Shape and migration in `game/save.js` (`normalizeSave` accepts anything). **Never break old saves**: add fields with defaults in `defaultSave` + `normalizeSave`, bump `SAVE_VERSION` only if you must transform old data, and add a test.
+
+## Music (1.4.0)
+
+`src/music.js` schedules eighth notes (112 bpm) about 0.18 s ahead through `sfx.tone` / `sfx.noise` with their `delay`, so the beat survives frame hitches. `main.js` calls `updateMusic(intensity(run))` every frame while `run.mode === 'play'` and not paused or banked, and `resetMusic()` otherwise (pause, level-up, crate, menus), so it stops on those screens and restarts on a downbeat. Layers: bass always; off-beat hats from 60 Matchers alive; a soft snare from 140; a quiet square arpeggio from 200 or while the Template is up; any boss alive switches to a darker progression (Am, Bb, Am, E) with a sawtooth bass. The shared Oddvale mute silences it (kit `sfx`), and `save.settings.music` (pause-menu switch, default on; 1.3.0 saves get `true` in `normalizeSave`) turns it off alone. Volumes sit under the effects (bass 0.06, others 0.014-0.04). Never heard by a person in development: the test browser only proved notes are scheduled and stop on pause.
 
 ## Debug hook
 
@@ -104,12 +109,26 @@ Endless (`ENDLESS`, `ENDLESS_WAVES` in `data/timeline.js`, `runEndless` in `dire
 - Scrap: time/6 + pickups + elites + bosses (+40 for a win), times the Nose for Scrap bonus. A 3 minute run pays about 40 to 60 (novice bot average: 56 a run), a win 400 to 700. The whole workshop costs about 5,700, loadouts 380.
 - Player hits: 0.5 s of invulnerability after any hit, so damage per second is capped by the hardest hitter, not the crowd size. Contact damage is what kills new players; shots and slams are what kill good ones.
 
+## Balance notes (v1.4.0)
+
+Same seeds and method as below, `node tools/balance.mjs 96 12` before and after. Changes: Wrench-a-rang damage at levels 3-5 34/52/72 -> 38/60/86; Hot Oil tick at levels 4-5 0.30/0.28 -> 0.32/0.31 s; Bolt Mines damage at levels 3-5 25/29/34 -> 24/27/31 and level 5 blast 84 -> 80.
+
+| Bot | Median survival | Beat the Template | Template fight median (range) |
+| --- | --- | --- | --- |
+| novice, no workshop | 2:51 -> 2:53 | 0 -> 0 of 96 | n/a |
+| good, no workshop | 10:06 -> 10:43 | 22 -> 30 of 96 (reached 50 -> 53) | 75 s (29-113) -> 87 s (51-116) |
+| good, full workshop | 12:00 -> 12:00 | 72 -> 70 of 96 | 69 s (32-120) -> 72 s (16-119) |
+
+Share of its run's damage when held (good bot, no workshop / full workshop), before -> after: Hot Oil 33/28 -> 30/26, Bolt Mines 30/30 -> 26/28, Wrench-a-rang 23/16 -> 26/20, Spark 25/30 -> 25/29, Odd Eye Beam 25/25 -> 26/24, Chain 23/27 -> 24/27, Magnet Pulse 19/20 -> 19/22, Orbit Gears 20/18 -> 22/18. Gears are now the lowest with a full workshop (18%).
+
+Lucky Nut, re-measured after its 1.1.0 buff (scratch tool: the good bot takes the part whenever offered, no workshop, 48 runs, seeds as above, weapons before the 1.4.0 nudge). Median survival / wins: no forcing 10:22 / 11; Lucky Nut 7:39 / 12; Power Cell 8:52 / 11; Spare Plating 8:08 / 5; Dented Armour 7:52 / 2; Springy Treads 7:38 / 3. Forcing any part costs survival (it displaces weapon cards), but Lucky Nut now wins as often as the best part tested; its damage dealt by 9:00 (751k) is still below Power Cell (889k) and above Spare Plating (679k). Verdict: no longer an outlier, left unchanged. Springy Treads and Dented Armour are now the weak parts.
+
 ## Known weak spots
 
 - Not yet played by a human hand at full speed during development (the test browser was throttled); feel was tuned from bot runs, timing maths and screenshots. Real play-testing feedback is the most valuable input for the next update.
-- No music, only effects.
+- Music (1.4.0) is a simple loop that has never been heard by a person in development; volume balance against the effects is a guess.
 - The Template fight still varies (bots: about 30 to 120 s) because the good bot runs from bosses and short-range builds barely reach it; sizing narrowed the spread but cannot fix that. A player could in theory run away for the 20 s sizing window to get a smaller Template (it is clamped, so the gain is limited).
-- Hot Oil and Bolt Mines still lead damage share (28-33% when held); Wrench-a-rang is the weakest with a full workshop (17%). Springy Treads and Dented Armour test as weak as Lucky Nut did.
+- After 1.4.0 the weapon shares sit at 18-30% (Hot Oil 30% with no workshop is still the top; Orbit Gears 18% with a full workshop the bottom). The wrench buff also made the good bot (no workshop) beat the Template more often (22 -> 30 of 96). Springy Treads and Dented Armour test weakest of the parts.
 - Endless mode's new waves, packs and reprises are tuned from bot runs only.
 - Full screen on phones in landscape is cramped (overlays scroll).
 
@@ -127,7 +146,6 @@ Endless (`ENDLESS`, `ENDLESS_WAVES` in `data/timeline.js`, `runEndless` in `dire
 - A daily run: fixed seed from the date (`hashString` + `makeRng` in the kit), fixed loadout, its own best time.
 - More bosses with new patterns (rotating laser walls, a boss that copies your weapons: very on theme).
 - Floor variety: zones with different floor patterns, a few solid obstacles, breakable crates lying around.
-- A music loop built from `sfx.tune`, with layers that come in as the crowd grows.
 - An "Oddities" codex page: every Matcher type and weapon you have met.
 - More loadouts with real twists (one that cannot stop moving, one whose weapons aim where it walks).
 - Curses: optional run modifiers that pay more scrap.

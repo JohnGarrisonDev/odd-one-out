@@ -15,7 +15,7 @@ export function defaultSave() {
     chars: ['odd'],
     char: 'odd',
     achievements: {},
-    settings: { damageNumbers: true, shake: true },
+    settings: { damageNumbers: true, shake: true, music: true },
   }
 }
 
@@ -41,6 +41,7 @@ export function normalizeSave(raw) {
   const st = obj(r.settings)
   d.settings.damageNumbers = st.damageNumbers !== false
   d.settings.shake = st.shake !== false
+  d.settings.music = st.music !== false // added in 1.4.0: older saves get music on
   return d
 }
 
