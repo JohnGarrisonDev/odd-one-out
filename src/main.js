@@ -94,6 +94,9 @@ window.addEventListener('keydown', (e) => {
 })
 // Rule 7: never let anyone die in a background tab.
 document.addEventListener('visibilitychange', () => { if (document.hidden && run && run.mode === 'play' && !paused) setPaused(true) })
+// Leaving full screen mid-run (exit button, Android back, Esc) jumps the layout under the player's thumb: pause.
+// (Deferred: Esc in the iPhone-style focus mode also reaches the P/Esc pause toggle below, which pauses by itself.)
+stage.addEventListener('oddvale:fullscreen', (e) => { if (!e.detail.on) setTimeout(() => { if (run && run.mode === 'play' && !paused && !banked) setPaused(true) }, 0) })
 
 let lastT = performance.now(), clock = 0
 function frame(now) {

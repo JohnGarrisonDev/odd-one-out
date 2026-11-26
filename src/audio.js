@@ -1,6 +1,6 @@
 // Sound: maps simulation event names to little synth sounds from the kit, with a minimum gap per sound so a big
 // fight stays pleasant instead of turning into a buzz. To add a sound: add an entry to SOUNDS = [minGapSeconds, fn].
-import { sfx } from '../kit/kit.js'
+import { sfx, haptic } from '../kit/kit.js'
 
 let combo = 0, comboT = 0
 const SOUNDS = {
@@ -40,6 +40,8 @@ const SOUNDS = {
   buy: [0.05, () => sfx.tune([[660, 0.05], [880, 0.05], [1320, 0.12]], { type: 'triangle', vol: 0.12 })],
   nope: [0.1, () => sfx.tone({ freq: 160, dur: 0.1, type: 'square', vol: 0.06 })],
 }
+// A short buzz on phones for the moments that matter (kit haptic: Android only, silent when muted or reduced motion).
+const HAPTIC = { hurt: 28, level: [12, 40, 12], crate: 15, bossdie: [30, 50, 30], revive: 30, die: [40, 60, 90], win: [20, 50, 20, 50, 60] }
 const last = {}
 
 export function play(name) {
@@ -49,6 +51,7 @@ export function play(name) {
   if (now - (last[name] || 0) < s[0]) return
   last[name] = now
   s[1]()
+  if (HAPTIC[name]) haptic(HAPTIC[name])
 }
 /** Play (and empty) the simulation's event list for this frame. */
 export function playEvents(events) {

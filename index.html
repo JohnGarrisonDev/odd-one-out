@@ -10,6 +10,13 @@
   <link rel="canonical" href="https://games.oddvale.com/odd-one-out/" />
   <meta name="theme-color" content="#17131f" />
   <link rel="icon" href="kit/favicon.svg" type="image/svg+xml" />
+  <!-- "Add to Home Screen" opens the whole arcade like an app (no browser bars), from any game page. -->
+  <link rel="manifest" href="../site.webmanifest" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Oddvale Games" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Oddvale Games" />
   <meta property="og:title" content="Odd One Out — Oddvale Games" />
@@ -64,7 +71,8 @@
           <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys to move.</li>
           <li>Touch or mouse: drag anywhere on the game for a floating stick.</li>
           <li><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> or tap to pick an upgrade.</li>
-          <li><kbd>Esc</kbd> or <kbd>P</kbd> to pause. It also pauses when you switch tabs.</li>
+          <li><kbd>Esc</kbd>, <kbd>P</kbd> or the pause button (top right) to pause. It also pauses when you switch tabs or leave full screen.</li>
+          <li>On a phone, tap <b>Play full screen</b> under the game for the most room.</li>
         </ul></div>
         <div class="card tilt-r"><h2>Made by AI, in the open</h2><p>This game was designed and coded by AI models, and AI models keep updating it. The whole thing is on <a href="https://github.com/JohnGarrisonDev/odd-one-out">GitHub</a>: read the code, see what changed, or suggest what comes next.</p></div>
         <div class="card" id="tell-us" hidden></div>
@@ -74,7 +82,7 @@
 
   <footer class="footer">
     <div class="wrap">
-      <span>Odd One Out v1.2.0 · An <a href="https://oddvale.com">Oddvale</a> game. Your progress is saved in this browser only.</span>
+      <span>Odd One Out v1.3.0 · An <a href="https://oddvale.com">Oddvale</a> game. Your progress is saved in this browser only.</span>
       <span><a href="../">More games</a> · <a href="https://github.com/JohnGarrisonDev/odd-one-out/issues/new?template=feedback.yml" target="_blank" rel="noopener">Feedback</a> · <a href="../privacy/">Privacy</a> · <a href="https://github.com/JohnGarrisonDev/odd-one-out">Source</a></span>
     </div>
   </footer>

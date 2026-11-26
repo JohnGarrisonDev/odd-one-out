@@ -168,7 +168,10 @@ export function makeUI(stage, renderer, on) {
       toggles.append(t)
     }
     const row = el('<div class="row"></div>')
-    row.append(btn('Resume', 'primary', () => on.resume(), 'data-focus'), btn('Give up', '', () => on.giveUp()))
+    // Give up asks twice: on a phone it sits right next to Resume.
+    let armed = false
+    const quit = btn('Give up', '', () => { if (armed) on.giveUp(); else { armed = true; quit.textContent = 'Really give up?'; quit.classList.add('danger') } })
+    row.append(btn('Resume', 'primary', () => on.resume(), 'data-focus'), quit)
     pause.append(toggles, row)
     show('pause')
   }

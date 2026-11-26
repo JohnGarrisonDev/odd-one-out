@@ -41,6 +41,7 @@ export function makeInput(canvas) {
   const end = (e) => { if (e.pointerId === stick.id) { stick.on = false; stick.id = -1; stick.dx = stick.dy = 0 } }
   canvas.addEventListener('pointerup', end)
   canvas.addEventListener('pointercancel', end)
+  canvas.addEventListener('lostpointercapture', end) // the browser took the gesture: let go of the stick
   canvas.addEventListener('contextmenu', (e) => e.preventDefault())
 
   function update() {

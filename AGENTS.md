@@ -113,6 +113,14 @@ Endless (`ENDLESS`, `ENDLESS_WAVES` in `data/timeline.js`, `runEndless` in `dire
 - Endless mode's new waves, packs and reprises are tuned from bot runs only.
 - Full screen on phones in landscape is cramped (overlays scroll).
 
+## Phones and full screen (1.3.0)
+
+- The kit's `wireChrome` gives full screen everywhere (native, or the iPhone "focus" fallback; both add `.stage.is-full`). In full screen `game.css` insets `.ui` by the safe areas like the kit insets the canvas, moves the kit's exit button down beside the pause button (top: 22px) and shifts `.hud-row` left 68px. Overlays get 70px top padding (portrait) or 60px side padding (short stage) so nothing sits under the exit button.
+- `main.js` pauses the run when full screen ends (`oddvale:fullscreen` with `on: false`), deferred one tick so Esc in focus mode doesn't pause and then un-pause.
+- Touch targets: 44px on `(pointer: coarse)` for pause, loadout chips, toggles and buttons. "Give up" needs two taps. Level-up cards still ignore clicks for 280 ms after opening (`settled()` in `ui.js`).
+- `audio.js` fires a kit `haptic()` with a few sounds (`HAPTIC` table). `input.js` treats `lostpointercapture` like `pointerup`.
+- `game.css` sizes the injected "Play full screen" button's icon (kit workaround: the kit's `.stage-cta svg` has no size yet).
+
 ## Backlog (ideas for future updates)
 
 - Weapon evolutions: a maxed weapon + a specific maxed part becomes a new weapon (data: `evolvesWith`, `evolvesTo`).

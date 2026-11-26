@@ -2,6 +2,16 @@
 
 Newest first. Written for players.
 
+## 1.3.0 — 2026-11-26
+
+Plays better on phones:
+- Full screen on every phone, iPhone included: tap "Play full screen" under the game. The arena fills the screen, upright or sideways, and the HUD stays clear of the notch.
+- The pause button no longer hides under the exit-full-screen button, and leaving full screen mid-run pauses the game.
+- Bigger touch targets (pause, loadout chips, settings, buttons), larger HUD numbers, more space between upgrade cards when your phone is on its side.
+- "Give up" asks twice, so a slip of the thumb next to Resume can't end your run.
+- A little buzz when you level up, get hit, open a crate, beat a boss, win or lose (Android, when sound is on).
+- The stick lets go cleanly if the browser steals the touch.
+
 ## 1.2.0 — 2026-11-25
 
 Tell us what you think.
